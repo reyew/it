@@ -1,0 +1,22 @@
+name: test
+on:
+  schedule:
+    - cron: "0 10 * * THU"
+  workflow_dispatch:
+    
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        run: |
+          git config --global --add safe.directory $(pwd)
+          git clone --quiet https://${{ github.token }}@github.com/${{ github.repository }} .
+          date >> it.txt
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git commit -m "test"
+          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git push 
+          
